@@ -1,14 +1,15 @@
-import { reactive, watch } from '@vue/composition-api';
+import { reactive, watch, toRefs } from '@vue/composition-api';
 
-export function useLocalStorage<T extends object>(
+export function useLocalStorage<T extends Object>(
   initialValue?: Partial<T>
 ) {
   const state = reactive<T>({
-    ...localStorage,
     ...initialValue,
+    ...localStorage as T,
   });
+  const stateRefs = toRefs(state);
 
-  watch(state, (nextState, prevState) => {
+  watch(stateRefs, (nextState, prevState) => {
     const changedEntries = Object
       .entries(nextState)
       .filter(([prop, nextValue]) => nextValue === prevState[prop]);
@@ -16,7 +17,7 @@ export function useLocalStorage<T extends object>(
     changedEntries.forEach(([prop, value]) => 
       localStorage.setItem(prop, JSON.stringify(value))
     );
-  });
+  }, { deep: true });
 
-  return state;
+  return stateRefs;
 }

@@ -34,16 +34,16 @@
 import Vue from 'vue';
 import { useFetch } from '../composables/useFetch';
 import { useLocalStorage } from '../composables/useLocalStorage';
+import { reactive, toRefs, createComponent } from '@vue/composition-api';
 
-export default Vue.extend({
+export default createComponent({
   name: 'HelloWorld',
   props: {
     msg: String,
   },
   setup(props, context) {
     const { isLoading, data: posts } = useFetch('/posts/1');
-    const ls = useLocalStorage<LS>();
-
+    const ls = useLocalStorage<LS>({ isLoggedIn: false });
     return { props };
   }
 });
