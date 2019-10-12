@@ -32,13 +32,26 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { useFetch } from '../composables/useFetch';
+import { useLocalStorage } from '../composables/useLocalStorage';
 
 export default Vue.extend({
   name: 'HelloWorld',
   props: {
     msg: String,
   },
+  setup(props, context) {
+    const { isLoading, data: posts } = useFetch('/posts/1');
+    const ls = useLocalStorage<LS>();
+
+    return { props };
+  }
 });
+
+interface LS {
+  isLoggedIn: boolean
+}
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
