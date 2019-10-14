@@ -1,10 +1,21 @@
 import { onMounted, onBeforeUnmount, ref, Ref } from '@vue/composition-api';
 
-export function useEvent<K extends keyof DocumentEventMap>(
+export function useEvent<
+  K extends keyof HTMLElementEventMap,
+  E extends HTMLElement,
+>(
   eventName: K,
-  eventHandler: EventListenerOrEventListenerObject,
-  elementRef: Ref<Element> = ref(document),
-) {
-  onMounted(() => elementRef.value.addEventListener(eventName, eventHandler));
-  onBeforeUnmount(() => elementRef.value.removeEventListener(eventName, eventHandler));
+  eventHandler: (event: HTMLElementEventMap[K]) => void,
+  elementRef: Ref<E | Document | null> = ref(document),
+): void {
+  onMounted(() => {
+    if (elementRef.value) {
+      elementRef.value.addEventListener(eventName, eventHandler);
+    }
+  });
+  onBeforeUnmount(() => {
+    if (elementRef.value) {
+      elementRef.value.removeEventListener(eventName, eventHandler);
+    }
+  });
 }
